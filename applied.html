@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database</title>
+    <style>* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: rgb(248, 246, 246);
+    }
+    /* Navbar related css */
+    
+    #links {
+      display: flex;
+      justify-content: space-evenly;
+      padding: 1%;
+      box-shadow: 2px 2px 5px 5px rgb(235, 235, 235);
+    }
+    
+    #links > div {
+      display: flex;
+      list-style: none;
+    }
+    #links a {
+      text-decoration: none;
+      color: teal;
+      font-size: 30px;
+    }
+    
+    table,
+    td,
+    th {
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 70%;
+      margin: auto;
+      margin-top: 50px;
+    }
+    
+    th,
+    td {
+      padding: 15px;
+    }
+    
+    tr > th {
+      background-color: teal;
+      color: white;
+    }
+    </style>
+    <link rel="stylesheet" href="commonStyles.css" />
+  </head>
+
+  <body>
+    <div id="links">
+      <div><a href="index.html">Home</a></div>
+      <div><a href="applied.html">Applied Jobs</a></div>
+      <div><a href="bookmark.html">Bookmarks</a></div>
+    </div>
+<!-- sort by names -->
+<select id="sortNames" onChange="sortbyname()">
+  <option value="original">Sort By Name</option>
+  <option value="asc">Ascending</option>
+  <option value="dsc">Descending</option>
+</select>
+
+<select id="sortSalary" onChange="sortbysalary()">
+  <option>Sort By Salary</option>
+  <option value="HTL">High to Low</option>
+  <option value="LTH">Low to High</option>
+</select>
+
+<select id="filterRole" onChange="Filter()">
+  <option>Filter Category</option>
+  <option value="FSD">FSD</option>
+  <option value="Frontend">FRONTEND</option>
+  <option value="Backend">BACKEND</option>
+</select>
+
+
+    <main>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Job applied</th>
+            <th>Salary expected</th>
+            <th>Add to bookmark</th>
+          </tr>
+        </thead>
+        <tbody id="body">
+          <!-- Append your output to tbody -->
+        </tbody>
+      </table>
+    </main>
+  </body>
+  <script>
+    //you need to code here
+
+    
+
+    var jobarr=JSON.parse(localStorage.getItem("joblist"));
+    displayData(jobarr);
+    function sortbyname(){
+      var option=document.querySelector("#sortNames").value;
+      console.log(option)
+      if(option=="original")
+      {
+
+        console.log(jobarr);
+        displayData(jobarr);
+      }
+      if(option=="asc")
+      {
+        jobarr.sort(function(a,b){
+
+        var x=a.dname.toUpperCase();
+        var y=b.dname.toUpperCase();
+        if(x>y)
+        {
+          return 1;
+        }
+        if(x<y)
+        {
+          return -1;
+        }
+        else{
+          return 0;
+        }
+      });
+      console.log(jobarr);
+      displayData(jobarr);
+
+      }
+      if(option=="dsc")
+      {
+        jobarr.sort(function (a,b){
+          var x = a.dname.toUpperCase();
+          var y = b.dname.toUpperCase();
+          if(x>y)
+          {
+            return -1;
+          }
+          if(x<y)
+          {
+            return 1;
+          }
+          else{
+            return 0;
+          }
+        })
+        console.log(jobarr);
+        displayData(jobarr);
+      }
+    }
+
+    function sortbysalary(){
+      var option=document.querySelector("#sortSalary").value;
+
+      if(option=="HTL")
+      {
+        jobarr.sort(function(a,b){
+          return b.dsalary-a.dsalary;
+        });
+        displayData(jobarr);
+      }
+      if(option=="LTH"){
+        jobarr.sort(function(a,b){
+          return a.dsalary-b.dsalary;
+        });
+        displayData(jobarr);
+      }
+
+    }
+   
+   function Filter(){
+     var option=document.querySelector("#filterRole").value;
+     var filterlist=jobarr.filter(function(element){
+       return element.drole==option;
+     })
+     displayData(filterlist);
+
+   }
+    var b= JSON.parse(localStorage.getItem("bookmarks")) || [];
+
+    function displayData(arr){
+      document.querySelector("tbody").innerHTML = "";
+      arr.forEach(function(element) {
+
+        var tr = document.createElement("tr");
+
+        var td1 = document.createElement("td");
+        td1.innerText=element.dname;
+
+        var td2 = document.createElement("td");
+        td2.innerText=element.dmail;
+
+        var td3 = document.createElement("td");
+        td3.innerText=element.drole;
+
+        var td4 = document.createElement("td");
+        td4.innerText=element.dsalary;
+
+        var td5= document.createElement("td");
+        td5.innerText="BOOKMARK";
+        td5.style.color="blue";
+        td5.style.cursor="pointer";
+        td5.addEventListener("click", function () {
+         
+         
+          bookmark(element)
+        });
+    
+        tr.append(td1,td2,td3,td4,td5)
+        document.querySelector("tbody").append(tr);
+       });
+    }
+    function  bookmark(element) {
+      console.log(element);
+    b.push(element)
+    console.log(b)
+      localStorage.setItem("bookmarks", JSON.stringify(b));
+    }
+  
+
+
+  </script>
+</html>
